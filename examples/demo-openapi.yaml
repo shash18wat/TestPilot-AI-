@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Demo Inventory API
+  version: 1.0.0
+  description: A compact example contract for trying the TestPilot workspace.
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Check service health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /items:
+    parameters:
+      - name: x-request-id
+        in: header
+        required: false
+        schema:
+          type: string
+    get:
+      operationId: listItems
+      summary: List inventory items
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Items returned
+    post:
+      operationId: createItem
+      summary: Create an inventory item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: Desk lamp
+                quantity:
+                  type: integer
+                  minimum: 0
+      responses:
+        '201':
+          description: Item created
+  /items/{item_id}:
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getItem
+      summary: Get an item by ID
+      responses:
+        '200':
+          description: Item returned
+        '404':
+          description: Item not found
