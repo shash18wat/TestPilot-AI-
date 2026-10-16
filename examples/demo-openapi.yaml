@@ -1,80 +1,45 @@
 openapi: 3.0.3
 info:
-  title: Demo Inventory API
+  title: Demo Posts API
   version: 1.0.0
-  description: A compact example contract for trying the TestPilot workspace.
+  description: A safe read-only sample for the public JSONPlaceholder demo API. In TestPilot, use https://jsonplaceholder.typicode.com as the target base URL.
 servers:
-  - url: https://api.example.com/v1
+  - url: https://jsonplaceholder.typicode.com
 paths:
-  /health:
+  /posts:
     get:
-      operationId: getHealth
-      summary: Check service health
+      operationId: listPosts
+      summary: List sample posts
       responses:
         '200':
-          description: Service is healthy
+          description: Posts returned
           content:
             application/json:
               schema:
-                type: object
-                required: [status]
-                properties:
-                  status:
-                    type: string
-                    example: ok
-  /items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: integer
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    body:
+                      type: string
+  /posts/{post_id}:
     parameters:
-      - name: x-request-id
-        in: header
-        required: false
-        schema:
-          type: string
-    get:
-      operationId: listItems
-      summary: List inventory items
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-      responses:
-        '200':
-          description: Items returned
-    post:
-      operationId: createItem
-      summary: Create an inventory item
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [name]
-              properties:
-                name:
-                  type: string
-                  example: Desk lamp
-                quantity:
-                  type: integer
-                  minimum: 0
-      responses:
-        '201':
-          description: Item created
-  /items/{item_id}:
-    parameters:
-      - name: item_id
+      - name: post_id
         in: path
         required: true
         schema:
-          type: string
+          type: integer
     get:
-      operationId: getItem
-      summary: Get an item by ID
+      operationId: getPost
+      summary: Get one sample post
       responses:
         '200':
-          description: Item returned
+          description: Post returned
         '404':
-          description: Item not found
+          description: Post not found

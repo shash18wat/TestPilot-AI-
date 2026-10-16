@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.git
+.venv
+**/__pycache__
+**/*.py[cod]
+backend/data
+frontend/node_modules
+frontend/dist
+frontend/*.tsbuildinfo
+.pytest_cache
+.pytest-work
+.pip-cache
+.pip-tmp

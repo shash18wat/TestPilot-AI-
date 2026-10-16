@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: testpilot-ai
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    envVars:
+      - key: TESTPILOT_OWNER_EMAIL
+        value: tiwarishashwat36@gmail.com
+      - key: TESTPILOT_SESSION_SECRET
+        generateValue: true
+      - key: TESTPILOT_COOKIE_SECURE
+        value: "true"
+      - key: TESTPILOT_ALLOWED_HOSTS
+        value: jsonplaceholder.typicode.com
+      - key: TESTPILOT_ALLOW_HTTP
+        value: "false"
+      - key: TESTPILOT_DB_PATH
+        value: /tmp/testpilot.sqlite3
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false

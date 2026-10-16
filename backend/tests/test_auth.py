@@ -22,6 +22,28 @@ def test_signed_session_only_accepts_configured_owner(monkeypatch):
         auth.issue_session("someone@example.com")
 
 
+def test_render_service_url_supplies_production_oauth_urls(monkeypatch):
+    monkeypatch.delenv("GOOGLE_REDIRECT_URI", raising=False)
+    monkeypatch.delenv("TESTPILOT_FRONTEND_URL", raising=False)
+    monkeypatch.setenv("RENDER_EXTERNAL_URL", "https://testpilot-demo.onrender.com/")
+
+    values = auth.settings()
+
+    assert values["frontend_url"] == "https://testpilot-demo.onrender.com"
+    assert values["redirect_uri"] == "https://testpilot-demo.onrender.com/api/auth/google/callback"
+
+
+def test_explicit_oauth_urls_override_render_defaults(monkeypatch):
+    monkeypatch.setenv("RENDER_EXTERNAL_URL", "https://testpilot-demo.onrender.com")
+    monkeypatch.setenv("GOOGLE_REDIRECT_URI", "https://auth.example.com/callback")
+    monkeypatch.setenv("TESTPILOT_FRONTEND_URL", "https://app.example.com/")
+
+    values = auth.settings()
+
+    assert values["frontend_url"] == "https://app.example.com"
+    assert values["redirect_uri"] == "https://auth.example.com/callback"
+
+
 def test_tampered_and_unconfigured_sessions_are_rejected(monkeypatch):
     configure_auth(monkeypatch)
     token = auth.issue_session("tiwarishashwat36@gmail.com")

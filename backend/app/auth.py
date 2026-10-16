@@ -17,11 +17,12 @@ OAUTH_STATE_TTL_SECONDS = 10 * 60
 
 
 def settings() -> dict[str, Any]:
+    external_url = os.getenv("RENDER_EXTERNAL_URL", "").strip().rstrip("/")
     return {
         "client_id": os.getenv("GOOGLE_CLIENT_ID", "").strip(),
         "client_secret": os.getenv("GOOGLE_CLIENT_SECRET", "").strip(),
-        "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI", "http://127.0.0.1:8000/api/auth/google/callback").strip(),
-        "frontend_url": os.getenv("TESTPILOT_FRONTEND_URL", "http://127.0.0.1:5173").strip().rstrip("/"),
+        "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI", f"{external_url}/api/auth/google/callback" if external_url else "http://127.0.0.1:8000/api/auth/google/callback").strip(),
+        "frontend_url": os.getenv("TESTPILOT_FRONTEND_URL", external_url or "http://127.0.0.1:5173").strip().rstrip("/"),
         "owner_email": os.getenv("TESTPILOT_OWNER_EMAIL", "").strip().casefold(),
         "session_secret": os.getenv("TESTPILOT_SESSION_SECRET", ""),
         "cookie_secure": os.getenv("TESTPILOT_COOKIE_SECURE", "true").lower() in {"1", "true", "yes"},

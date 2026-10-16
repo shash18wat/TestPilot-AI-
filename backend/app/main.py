@@ -10,6 +10,7 @@ import asyncio
 import hashlib
 import hmac
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 from urllib.parse import quote, urlencode, urlsplit
 
@@ -19,6 +20,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import auth, database
@@ -338,4 +340,11 @@ async def ai_failure_explanation(run_id: int, _: dict[str, str] = Depends(requir
     run = dict(row)
     run["passed"] = bool(run["passed"])
     return await explain_failure(run)
+
+
+# The production container serves the built React application from the same origin as
+# the API. In local development Vite handles the same-origin /api proxy instead.
+frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+if frontend_dist.is_dir():
+    app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
 
